@@ -123,6 +123,11 @@ def gerar_numero_ocorrencia(db):
 
 # ─── Rotas ────────────────────────────────────────────────────────────────────
 
+@app.route('/health')
+def health():
+    return 'ok', 200
+
+
 @app.route('/')
 def index():
     if 'usuario_id' in session:
