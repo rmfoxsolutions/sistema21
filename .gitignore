@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+sistema.db
+.deps_ok
+Scripts/
+Lib/
+*.vbs
+.vscode/
+instance/
+*.egg-info/
+dist/
+build/

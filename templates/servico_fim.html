@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Fim de Serviço - PMESP{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 pb-5">
+
+  <div class="form-page-header mb-4">
+    <a href="{{ url_for('menu') }}" class="btn-voltar">
+      <i class="bi bi-arrow-left me-1"></i>Voltar
+    </a>
+    <div class="form-page-icon icon-laranja mx-auto">
+      <i class="bi bi-stop-circle-fill"></i>
+    </div>
+    <h2 class="form-page-titulo">Fim de Serviço</h2>
+    <p class="form-page-sub">Registre o encerramento do expediente</p>
+  </div>
+
+  <div class="info-hora-box mb-4">
+    <i class="bi bi-clock-fill me-2 text-warning"></i>
+    <strong>Horário atual:</strong>
+    <span id="horaAtual" class="ms-1 fw-bold text-warning"></span>
+  </div>
+
+  <form method="POST" novalidate>
+    <div class="form-card mb-3">
+      <div class="form-card-titulo">
+        <i class="bi bi-truck-front-fill me-2 text-warning"></i>Viatura
+      </div>
+
+      <div class="mb-3">
+        <label class="pmesp-label" for="viatura">Prefixo / Identificação</label>
+        <input type="text" id="viatura" name="viatura" class="form-control pmesp-input-field"
+               placeholder="Ex: VTR-4500, ROTA-01..." maxlength="20"
+               value="{{ session.matricula }}" />
+      </div>
+
+      <div class="mb-0">
+        <label class="pmesp-label" for="km_final">Km Final</label>
+        <input type="number" id="km_final" name="km_final" class="form-control pmesp-input-field"
+               placeholder="Km atual do veículo" min="0" />
+      </div>
+    </div>
+
+    <div class="form-card mb-4">
+      <div class="form-card-titulo">
+        <i class="bi bi-chat-text-fill me-2 text-warning"></i>Observações de Encerramento
+      </div>
+      <textarea name="observacao" class="form-control pmesp-textarea"
+                placeholder="Ocorrências do serviço, estado da viatura, pendências..." rows="3" maxlength="500"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-submit-laranja w-100 py-3 fw-bold fs-5 mb-3">
+      <i class="bi bi-stop-fill me-2"></i>ENCERRAR SERVIÇO
+    </button>
+
+    <a href="{{ url_for('menu') }}" class="btn btn-outline-secondary w-100 py-2">
+      <i class="bi bi-x me-1"></i>Cancelar
+    </a>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function tick() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('horaAtual').textContent =
+      `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} — ${d.toLocaleDateString('pt-BR')}`;
+  }
+  tick(); setInterval(tick, 1000);
+</script>
+{% endblock %}

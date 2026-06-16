@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Meu Histórico - PMESP{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 pb-5">
+
+  <div class="form-page-header mb-4">
+    <a href="{{ url_for('menu') }}" class="btn-voltar">
+      <i class="bi bi-arrow-left me-1"></i>Voltar
+    </a>
+    <div class="form-page-icon icon-roxo mx-auto">
+      <i class="bi bi-clock-history"></i>
+    </div>
+    <h2 class="form-page-titulo">Meu Histórico</h2>
+    <p class="form-page-sub">Últimos 20 registros por tipo</p>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills pmesp-pills mb-3" id="historicoPills" role="tablist">
+    <li class="nav-item flex-fill" role="presentation">
+      <button class="nav-link active w-100" id="oc-tab" data-bs-toggle="pill"
+              data-bs-target="#oc-pane" type="button" role="tab">
+        <i class="bi bi-file-earmark-text me-1"></i>
+        Ocorrências
+        <span class="badge bg-danger ms-1">{{ ocorrencias|length }}</span>
+      </button>
+    </li>
+    <li class="nav-item flex-fill" role="presentation">
+      <button class="nav-link w-100" id="ab-tab" data-bs-toggle="pill"
+              data-bs-target="#ab-pane" type="button" role="tab">
+        <i class="bi bi-person-lines-fill me-1"></i>
+        Abordagens
+        <span class="badge bg-primary ms-1">{{ abordagens|length }}</span>
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- Ocorrências -->
+    <div class="tab-pane fade show active" id="oc-pane" role="tabpanel">
+      {% if ocorrencias %}
+        {% for oc in ocorrencias %}
+        <div class="historico-card mb-2">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <span class="historico-numero">{{ oc.numero }}</span>
+            <span class="badge badge-prioridade badge-{{ 'danger' if oc.prioridade == 'alta' else ('warning text-dark' if oc.prioridade == 'normal' else 'secondary') }}">
+              {{ oc.prioridade.upper() }}
+            </span>
+          </div>
+          <div class="historico-tipo">{{ oc.tipo }}{% if oc.natureza %} — {{ oc.natureza }}{% endif %}</div>
+          <div class="historico-local">
+            <i class="bi bi-geo-alt me-1"></i>{{ oc.local_fato }}
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <small class="text-muted">{{ oc.criado_em[:16].replace('T', ' ') }}</small>
+            <span class="badge {{ 'bg-warning text-dark' if oc.status == 'em_andamento' else 'bg-secondary' }}">
+              {{ 'Em andamento' if oc.status == 'em_andamento' else 'Encerrado' }}
+            </span>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center text-muted py-5">
+          <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+          <small>Nenhuma ocorrência registrada</small>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Abordagens -->
+    <div class="tab-pane fade" id="ab-pane" role="tabpanel">
+      {% if abordagens %}
+        {% for ab in abordagens %}
+        <div class="historico-card mb-2">
+          <div class="historico-tipo">{{ ab.nome_abordado }}</div>
+          <div class="historico-local">
+            <i class="bi bi-geo-alt me-1"></i>{{ ab.local_abordagem }}
+          </div>
+          <div class="text-muted small mt-1">
+            <i class="bi bi-info-circle me-1"></i>{{ ab.motivo }}
+            {% if ab.resultado %} — {{ ab.resultado }}{% endif %}
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <small class="text-muted">{{ ab.criado_em[:16].replace('T', ' ') }}</small>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center text-muted py-5">
+          <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+          <small>Nenhuma abordagem registrada</small>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

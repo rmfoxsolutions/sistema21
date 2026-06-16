@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Menu Principal - PMESP{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 pb-5">
+
+  <!-- Saudação -->
+  <div class="menu-greeting mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="avatar-circle">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div>
+        <div class="greeting-text">Bem-vindo,</div>
+        <div class="greeting-name">{{ session.nome }}</div>
+        {% if session.matricula %}
+        <div class="greeting-matricula">
+          <i class="bi bi-shield-fill me-1"></i>{{ session.matricula }}
+        </div>
+        {% endif %}
+      </div>
+      <div class="ms-auto text-end">
+        <div class="badge-status">
+          <span class="dot-verde me-1"></span>Em Serviço
+        </div>
+        <div class="hora-atual" id="horaAtual"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ação principal em destaque -->
+  <a href="{{ url_for('nova_ocorrencia') }}" class="card-acao-principal d-block text-decoration-none mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <div class="acao-principal-icon">
+        <i class="bi bi-file-earmark-text-fill"></i>
+      </div>
+      <div class="flex-grow-1">
+        <div class="acao-principal-titulo">Nova Ocorrência</div>
+        <div class="acao-principal-desc">Registrar B.O. / Atendimento</div>
+      </div>
+      <i class="bi bi-chevron-right acao-chevron"></i>
+    </div>
+  </a>
+
+  <!-- Grid de ações -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-6">
+      <a href="{{ url_for('nova_abordagem') }}" class="card-menu text-decoration-none d-block h-100">
+        <div class="card-menu-icon icon-azul">
+          <i class="bi bi-person-lines-fill"></i>
+        </div>
+        <div class="card-menu-titulo">Abordagem</div>
+        <div class="card-menu-desc">Registrar abordagem</div>
+      </a>
+    </div>
+
+    <div class="col-6">
+      <a href="{{ url_for('inicio_servico') }}" class="card-menu text-decoration-none d-block h-100">
+        <div class="card-menu-icon icon-verde">
+          <i class="bi bi-play-circle-fill"></i>
+        </div>
+        <div class="card-menu-titulo">Início Serviço</div>
+        <div class="card-menu-desc">Assumir viatura</div>
+      </a>
+    </div>
+
+    <div class="col-6">
+      <a href="{{ url_for('fim_servico') }}" class="card-menu text-decoration-none d-block h-100">
+        <div class="card-menu-icon icon-laranja">
+          <i class="bi bi-stop-circle-fill"></i>
+        </div>
+        <div class="card-menu-titulo">Fim de Serviço</div>
+        <div class="card-menu-desc">Encerrar expediente</div>
+      </a>
+    </div>
+
+    <div class="col-6">
+      <a href="{{ url_for('historico') }}" class="card-menu text-decoration-none d-block h-100">
+        <div class="card-menu-icon icon-roxo">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="card-menu-titulo">Histórico</div>
+        <div class="card-menu-desc">Meus registros</div>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Últimos registros -->
+  {% if ultimas %}
+  <div class="secao-titulo mb-2">
+    <i class="bi bi-clock me-1"></i>Últimas Ocorrências
+  </div>
+  <div class="lista-ultimas mb-4">
+    {% for oc in ultimas %}
+    <div class="item-ultimo">
+      <div class="d-flex align-items-start gap-2">
+        <span class="badge-tipo badge-{{ 'danger' if oc.prioridade == 'alta' else ('warning' if oc.prioridade == 'normal' else 'secondary') }}">
+          {{ oc.tipo[:12] }}
+        </span>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="item-ultimo-local text-truncate">{{ oc.local_fato }}</div>
+          <div class="item-ultimo-num">{{ oc.numero }}</div>
+        </div>
+        <span class="item-ultimo-status status-{{ oc.status }}">
+          {{ 'Ativo' if oc.status == 'em_andamento' else 'Encerrado' }}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center text-muted py-4">
+    <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+    <small>Nenhuma ocorrência registrada hoje</small>
+  </div>
+  {% endif %}
+
+  <!-- Contador total -->
+  <div class="card-contador text-center">
+    <i class="bi bi-journal-check me-2 text-danger"></i>
+    <strong>{{ total_ocorrencias }}</strong> ocorrência{{ 's' if total_ocorrencias != 1 else '' }} registrada{{ 's' if total_ocorrencias != 1 else '' }}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function atualizarHora() {
+    const agora = new Date();
+    const h = String(agora.getHours()).padStart(2, '0');
+    const m = String(agora.getMinutes()).padStart(2, '0');
+    const s = String(agora.getSeconds()).padStart(2, '0');
+    document.getElementById('horaAtual').textContent = `${h}:${m}:${s}`;
+  }
+  atualizarHora();
+  setInterval(atualizarHora, 1000);
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+sistema.db
+.deps_ok
+*.bat
+*.vbs
+.vscode
+Scripts

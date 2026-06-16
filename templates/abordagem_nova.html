@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Nova Abordagem - PMESP{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 pb-5">
+
+  <div class="form-page-header mb-4">
+    <a href="{{ url_for('menu') }}" class="btn-voltar">
+      <i class="bi bi-arrow-left me-1"></i>Voltar
+    </a>
+    <div class="form-page-icon icon-azul mx-auto">
+      <i class="bi bi-person-lines-fill"></i>
+    </div>
+    <h2 class="form-page-titulo">Abordagem</h2>
+    <p class="form-page-sub">Registro de abordagem / identificação</p>
+  </div>
+
+  <form method="POST" novalidate>
+
+    <!-- Identificação do abordado -->
+    <div class="form-card mb-3">
+      <div class="form-card-titulo">
+        <i class="bi bi-person-badge-fill me-2 text-primary"></i>Identificação
+      </div>
+
+      <div class="mb-3">
+        <label class="pmesp-label" for="nome_abordado">Nome Completo <span class="text-danger">*</span></label>
+        <input type="text" id="nome_abordado" name="nome_abordado" class="form-control pmesp-input-field"
+               placeholder="Nome do abordado" maxlength="150" required autocomplete="off" />
+      </div>
+
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="pmesp-label" for="rg">RG</label>
+          <input type="text" id="rg" name="rg" class="form-control pmesp-input-field"
+                 placeholder="00.000.000-0" maxlength="20" autocomplete="off" />
+        </div>
+        <div class="col-6">
+          <label class="pmesp-label" for="cpf">CPF</label>
+          <input type="text" id="cpf" name="cpf" class="form-control pmesp-input-field"
+                 placeholder="000.000.000-00" maxlength="20" autocomplete="off" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Local -->
+    <div class="form-card mb-3">
+      <div class="form-card-titulo">
+        <i class="bi bi-geo-alt-fill me-2 text-primary"></i>Local da Abordagem
+      </div>
+      <label class="pmesp-label" for="local_abordagem">Endereço <span class="text-danger">*</span></label>
+      <input type="text" id="local_abordagem" name="local_abordagem" class="form-control pmesp-input-field"
+             placeholder="Rua, Av., número, bairro..." maxlength="200" required />
+    </div>
+
+    <!-- Motivo e Resultado -->
+    <div class="form-card mb-4">
+      <div class="form-card-titulo">
+        <i class="bi bi-clipboard-check-fill me-2 text-primary"></i>Registro
+      </div>
+
+      <div class="mb-3">
+        <label class="pmesp-label" for="motivo">Motivo da Abordagem <span class="text-danger">*</span></label>
+        <select id="motivo" name="motivo" class="form-select pmesp-select" required>
+          <option value="" disabled selected>Selecione o motivo</option>
+          <option value="Atitude suspeita">Atitude suspeita</option>
+          <option value="Denúncia">Denúncia</option>
+          <option value="Verificação de veículo">Verificação de veículo</option>
+          <option value="Rondas">Rondas de rotina</option>
+          <option value="Fiscalização">Fiscalização</option>
+          <option value="Averiguação">Averiguação</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="pmesp-label" for="resultado">Resultado</label>
+        <select id="resultado" name="resultado" class="form-select pmesp-select">
+          <option value="">Sem ocorrência</option>
+          <option value="Nada constatado">Nada constatado</option>
+          <option value="Conduzido à delegacia">Conduzido à delegacia</option>
+          <option value="Drogas apreendidas">Drogas apreendidas</option>
+          <option value="Arma apreendida">Arma apreendida</option>
+          <option value="Mandado cumprido">Mandado cumprido</option>
+          <option value="Flagrante">Flagrante delito</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-submit-azul w-100 py-3 fw-bold fs-5 mb-3">
+      <i class="bi bi-send-fill me-2"></i>REGISTRAR ABORDAGEM
+    </button>
+
+    <a href="{{ url_for('menu') }}" class="btn btn-outline-secondary w-100 py-2">
+      <i class="bi bi-x me-1"></i>Cancelar
+    </a>
+
+  </form>
+</div>
+{% endblock %}

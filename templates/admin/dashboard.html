@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block title %}Painel Admin - PMESP{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 pb-5">
+
+  <!-- Header Admin -->
+  <div class="admin-header mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="admin-badge">
+        <i class="bi bi-shield-fill-check"></i>
+      </div>
+      <div>
+        <h4 class="mb-0 text-light fw-bold">Painel Administrativo</h4>
+        <small class="text-muted">PMESP — Controle de Viaturas</small>
+      </div>
+      <div class="ms-auto">
+        <div class="hora-atual-admin" id="horaAdmin"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-6 col-md-4">
+      <div class="stat-card stat-vermelho">
+        <div class="stat-numero">{{ stats.total_ocorrencias }}</div>
+        <div class="stat-label">Ocorrências Total</div>
+        <div class="stat-hoje">+{{ stats.ocorrencias_hoje }} hoje</div>
+        <i class="bi bi-file-earmark-text stat-icon-bg"></i>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="stat-card stat-azul">
+        <div class="stat-numero">{{ stats.total_abordagens }}</div>
+        <div class="stat-label">Abordagens Total</div>
+        <div class="stat-hoje">+{{ stats.abordagens_hoje }} hoje</div>
+        <i class="bi bi-person-lines-fill stat-icon-bg"></i>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="stat-card stat-verde">
+        <div class="stat-numero">{{ stats.total_usuarios }}</div>
+        <div class="stat-label">Viaturas Ativas</div>
+        <div class="stat-hoje">usuários cadastrados</div>
+        <i class="bi bi-truck-front stat-icon-bg"></i>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="stat-card stat-roxo">
+        <div class="stat-numero">{{ stats.total_servicos }}</div>
+        <div class="stat-label">Serviços Registrados</div>
+        <div class="stat-hoje">início e fim</div>
+        <i class="bi bi-calendar-check stat-icon-bg"></i>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8">
+      <div class="stat-card stat-escuro d-flex align-items-center gap-3 h-100">
+        <i class="bi bi-bar-chart-fill fs-1 text-muted"></i>
+        <div>
+          <div class="stat-label mb-1">Relatórios</div>
+          <p class="text-muted small mb-0">Os relatórios completos estarão disponíveis na próxima versão do sistema. Os dados já estão sendo coletados e armazenados.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Últimas ocorrências -->
+  <div class="secao-titulo mb-2">
+    <i class="bi bi-file-earmark-text-fill me-2 text-danger"></i>Últimas Ocorrências
+  </div>
+  <div class="table-responsive mb-4">
+    <table class="table pmesp-table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Tipo</th>
+          <th>Local</th>
+          <th>Viatura</th>
+          <th>Prioridade</th>
+          <th>Status</th>
+          <th>Data/Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for oc in ultimas_ocorrencias %}
+        <tr>
+          <td class="fw-bold text-danger">{{ oc.numero }}</td>
+          <td>{{ oc.tipo }}</td>
+          <td class="text-truncate" style="max-width:150px;">{{ oc.local_fato }}</td>
+          <td>
+            <small class="text-muted">{{ oc.nome }}</small>
+            {% if oc.matricula %}<br><small class="text-warning">{{ oc.matricula }}</small>{% endif %}
+          </td>
+          <td>
+            <span class="badge {{ 'bg-danger' if oc.prioridade == 'alta' else ('bg-warning text-dark' if oc.prioridade == 'normal' else 'bg-secondary') }}">
+              {{ oc.prioridade }}
+            </span>
+          </td>
+          <td>
+            <span class="badge {{ 'bg-warning text-dark' if oc.status == 'em_andamento' else 'bg-secondary' }}">
+              {{ 'Ativo' if oc.status == 'em_andamento' else 'Encerrado' }}
+            </span>
+          </td>
+          <td><small>{{ oc.criado_em[:16].replace('T', ' ') }}</small></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-4">
+            <i class="bi bi-inbox me-2"></i>Nenhuma ocorrência registrada
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Últimas abordagens -->
+  <div class="secao-titulo mb-2">
+    <i class="bi bi-person-lines-fill me-2 text-primary"></i>Últimas Abordagens
+  </div>
+  <div class="table-responsive">
+    <table class="table pmesp-table">
+      <thead>
+        <tr>
+          <th>Abordado</th>
+          <th>Local</th>
+          <th>Motivo</th>
+          <th>Resultado</th>
+          <th>Viatura</th>
+          <th>Data/Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ab in ultimas_abordagens %}
+        <tr>
+          <td class="fw-bold">{{ ab.nome_abordado }}</td>
+          <td class="text-truncate" style="max-width:120px;">{{ ab.local_abordagem }}</td>
+          <td>{{ ab.motivo }}</td>
+          <td>{{ ab.resultado or '—' }}</td>
+          <td><small class="text-muted">{{ ab.nome }}</small></td>
+          <td><small>{{ ab.criado_em[:16].replace('T', ' ') }}</small></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">
+            <i class="bi bi-inbox me-2"></i>Nenhuma abordagem registrada
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function tick() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('horaAdmin').textContent =
+      `${d.toLocaleDateString('pt-BR')} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  tick(); setInterval(tick, 1000);
+</script>
+{% endblock %}
